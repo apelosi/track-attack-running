@@ -1,0 +1,35 @@
+---
+const { title = "Track Attack Running", description = "Fun, fast group workouts and run form coaching." } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon-32.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#D7322A" />
+    <link rel="stylesheet" href="/styles/base.css">
+  </head>
+  <body class="bg-white text-gray-900">
+    <header class="p-4 bg-primary text-white">
+      <nav class="max-w-6xl mx-auto flex justify-between">
+        <a href="/">Track Attack Running</a>
+        <div class="space-x-4">
+          <a href="#about">About</a>
+          <a href="#book">Book</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="p-4 text-center text-sm text-gray-500 border-t mt-10">
+      © {new Date().getFullYear()} Track Attack Running
+    </footer>
+  </body>
+</html>
