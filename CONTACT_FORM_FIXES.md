@@ -11,7 +11,7 @@
 
 ### 1. Contact Component (`src/components/Contact.astro`)
 - Removed `action="/thanks"` redirect
-- Fixed form name to be consistent (`name="contact"`)
+- Kept original form name (`name="track-attack-running-contact-us"`) for Netlify identification
 - Added inline success and error message displays
 - Implemented proper form submission handling with JavaScript
 - Added loading states and form reset functionality
@@ -45,7 +45,7 @@
 
 ## Technical Details
 
-- Form uses `data-netlify="true"` for Netlify integration
+- Form uses `data-netlify="true"` for Netlify integration with name `track-attack-running-contact-us`
 - JavaScript handles form submission asynchronously
 - reCAPTCHA is properly integrated and verified
 - Form data is submitted using `FormData` and `URLSearchParams`
