@@ -9,3 +9,11 @@
   from = "/contact"
   to = "/#contact"
   status = 301
+
+# Form handling configuration
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
