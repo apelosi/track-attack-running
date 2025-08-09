@@ -1,14 +1,14 @@
----
-const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
----
 <section id="contact" class="max-w-4xl mx-auto p-6">
   <h2 class="text-2xl font-bold">Contact Us</h2>
-  <form method="POST" class="mt-4 grid gap-4">
-    <input type="text" name="name" placeholder="Name" required class="border p-2 rounded">
-    <input type="email" name="email" placeholder="Email" required class="border p-2 rounded">
+  <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="mt-4 grid gap-4">
+    <input type="hidden" name="form-name" value="contact" />
+    <p class="hidden">
+      <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+    </p>
+    <input type="text" name="name" placeholder="Name" required class="border p-2 rounded" />
+    <input type="email" name="email" placeholder="Email" required class="border p-2 rounded" />
     <textarea name="message" placeholder="Message" required class="border p-2 rounded"></textarea>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-    <div class="cf-turnstile" data-sitekey={siteKey}></div>
+    <div data-netlify-recaptcha="true"></div>
     <button type="submit" class="px-4 py-2 bg-primary text-white rounded">Send</button>
   </form>
 </section>
