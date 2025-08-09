@@ -3,4 +3,8 @@ import { defineConfig } from "astro/config";
 export default defineConfig({
   site: "https://trackattackrunning.com",
   integrations: [tailwind()],
+  trailingSlash: "never",
+  build: {
+    format: "file",
+  },
 });
