@@ -2,6 +2,12 @@
 ---
 <section id="contact" class="max-w-4xl mx-auto p-6">
   <h2 class="text-2xl font-bold">Contact Us</h2>
+  <!--
+    Netlify's form detection requires the <form> to be present in the
+    generated static HTML. Avoid wrapping this form in any conditional
+    rendering that might remove it during build, otherwise Netlify won't
+    recognize it.
+  -->
   <form name="contact" method="POST" action="/thanks" data-netlify="true" netlify-honeypot="bot-field" class="mt-4 grid gap-4">
     <input type="hidden" name="form-name" value="contact">
     <p class="hidden">
