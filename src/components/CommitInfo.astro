@@ -1,0 +1,60 @@
+---
+// Get commit information from environment variables or build-time data
+// These will be set during the build process
+const commitHash = import.meta.env.VITE_COMMIT_HASH || 'unknown';
+const commitMessage = import.meta.env.VITE_COMMIT_MESSAGE || 'No commit message available';
+const commitTimestamp = import.meta.env.VITE_COMMIT_TIMESTAMP || 'unknown';
+const buildTime = import.meta.env.VITE_BUILD_TIME || new Date().toISOString();
+
+// Format the timestamp
+let formattedTime = 'unknown';
+if (commitTimestamp !== 'unknown') {
+  try {
+    const date = new Date(commitTimestamp);
+    formattedTime = date.toLocaleString();
+  } catch (e) {
+    formattedTime = commitTimestamp;
+  }
+}
+
+// Format build time
+let formattedBuildTime = 'unknown';
+if (buildTime !== 'unknown') {
+  try {
+    const date = new Date(buildTime);
+    formattedBuildTime = date.toLocaleString();
+  } catch (e) {
+    formattedBuildTime = buildTime;
+  }
+}
+---
+
+<div class="bg-gray-100 border-t border-gray-200 py-3 px-4 text-center text-xs text-gray-600">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex flex-col sm:flex-row justify-center items-center space-y-1 sm:space-y-0 sm:space-x-4">
+      <div class="flex items-center space-x-2">
+        <span class="font-medium">Build:</span>
+        <span class="font-mono bg-gray-200 px-2 py-1 rounded text-xs">
+          {formattedBuildTime}
+        </span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="font-medium">Commit:</span>
+        <span class="font-mono bg-gray-200 px-2 py-1 rounded text-xs">
+          {commitHash.substring(0, 8)}
+        </span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="font-medium">Updated:</span>
+        <span class="font-mono bg-gray-200 px-2 py-1 rounded text-xs">
+          {formattedTime}
+        </span>
+      </div>
+    </div>
+    {commitMessage !== 'No commit message available' && (
+      <div class="mt-2 text-gray-500 max-w-2xl mx-auto">
+        <span class="font-medium">Message:</span> {commitMessage}
+      </div>
+    )}
+  </div>
+</div>
