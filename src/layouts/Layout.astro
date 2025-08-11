@@ -15,23 +15,26 @@ const { title = "Track Attack Running", description = "Fun, fast group workouts 
     <meta name="theme-color" content="#D7322A" />
     <link rel="stylesheet" href="/styles/base.css">
   </head>
-  <body class="bg-white text-gray-900">
-    <header class="p-4 bg-primary text-white">
-      <nav class="max-w-6xl mx-auto flex justify-between">
-        <a href="/">Track Attack Running</a>
-        <div class="space-x-4">
-          <a href="#about">About</a>
-          <a href="#book">Book</a>
-          <a href="#contact">Contact</a>
+    <body class="bg-white text-gray-900">
+      <header class="relative overflow-visible bg-gradient-to-r from-primary via-accent to-accentLight text-white">
+        <nav class="max-w-6xl mx-auto flex justify-end p-4">
+          <a href="#contact" class="font-medium hover:underline">Contact</a>
+        </nav>
+        <img src="/logo.svg" alt="Track Attack Running logo" class="absolute left-4 bottom-0 translate-y-1/2 w-20 h-auto" />
+      </header>
+      <main class="pt-12">
+        <slot />
+      </main>
+      <footer class="bg-gradient-to-r from-primary via-accent to-accentLight text-white mt-10">
+        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center p-4 text-sm">
+          <p class="mb-2 sm:mb-0">© 2025 Track Attack Running<sup class="align-super text-xs">TM</sup></p>
+          <div class="space-x-4">
+            <a href="/terms" class="hover:underline">Terms of Use</a>
+            <a href="/privacy" class="hover:underline">Privacy Policy</a>
+            <a href="#contact" class="hover:underline">Contact</a>
+          </div>
         </div>
-      </nav>
-    </header>
-    <main>
-      <slot />
-    </main>
-    <footer class="p-4 text-center text-sm text-gray-500 border-t mt-10">
-      © {new Date().getFullYear()} Track Attack Running
-    </footer>
-    <CommitInfo />
-  </body>
-</html>
+      </footer>
+      <CommitInfo />
+    </body>
+  </html>
