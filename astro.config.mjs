@@ -7,4 +7,7 @@ export default defineConfig({
   build: {
     format: "file",
   },
+  server: {
+    port: 4321,
+  },
 });
