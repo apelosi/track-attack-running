@@ -1,3 +1,0 @@
-# Redirect non-www to www (canonical domain)
-/trackattackrunning.com/*  https://www.trackattackrunning.com/:splat  301!
-trackattackrunning.com/*  https://www.trackattackrunning.com/:splat  301!
