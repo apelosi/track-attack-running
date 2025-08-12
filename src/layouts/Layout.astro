@@ -34,10 +34,13 @@ const { title = "Track Attack Running", description = "Fun, fast group workouts 
   </head>
     <body class="bg-white text-gray-900">
       <header class="relative overflow-visible bg-gradient-to-r from-primary via-accent to-accentLight text-white">
-        <nav class="max-w-6xl mx-auto flex justify-end p-4">
+        <nav class="max-w-6xl mx-auto flex justify-between items-center p-4">
+          <div class="flex items-center space-x-3">
+            <img src="/logo.svg" alt="Track Attack Running logo" class="w-12 h-12" />
+            <span class="text-lg font-bold">Track Attack Running</span>
+          </div>
           <a href="#contact" class="font-medium hover:underline">Contact</a>
         </nav>
-        <img src="/logo.svg" alt="Track Attack Running logo" class="absolute left-4 bottom-0 translate-y-1/2 w-20 h-auto" />
       </header>
       <main class="pt-12">
         <slot />
