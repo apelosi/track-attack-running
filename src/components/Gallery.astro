@@ -1,50 +1,33 @@
-<section id="gallery" class="max-w-6xl mx-auto p-6">
+<section id="gallery" class="max-w-4xl mx-auto p-6">
   <h2 class="text-2xl font-bold text-center mb-8">Photo Gallery</h2>
   
   <div class="relative">
-    <!-- Main Image Container -->
-    <div class="relative overflow-hidden rounded-lg shadow-lg bg-gray-100">
-      <img 
-        id="current-image" 
-        src="/tar-01.png" 
-        alt="Track Attack Running photo" 
-        class="w-full h-96 object-cover transition-opacity duration-300"
-      />
+    <!-- Photo Container -->
+    <div class="relative overflow-hidden rounded-lg">
+      <div id="photo-container" class="flex transition-transform duration-300 ease-in-out">
+        <!-- Photos will be populated by JavaScript -->
+      </div>
       
       <!-- Navigation Arrows -->
       <button 
         id="prev-btn" 
-        class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
-        aria-label="Previous photo"
+        class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 z-10"
+        aria-label="Previous photos"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
         </svg>
       </button>
       
       <button 
         id="next-btn" 
-        class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
-        aria-label="Next photo"
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 z-10"
+        aria-label="Next photos"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>
       </button>
-      
-      <!-- Image Counter -->
-      <div class="absolute bottom-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-        <span id="image-counter">1</span> / 50
-      </div>
-    </div>
-    
-    <!-- Thumbnail Navigation -->
-    <div class="mt-6 flex justify-center">
-      <div class="flex space-x-2 overflow-x-auto pb-2 max-w-full">
-        <div id="thumbnail-container" class="flex space-x-2">
-          <!-- Thumbnails will be populated by JavaScript -->
-        </div>
-      </div>
     </div>
     
     <!-- Pagination Dots -->
@@ -59,9 +42,11 @@
 <script>
   class PhotoGallery {
     constructor() {
-      this.currentIndex = 0;
+      this.currentPage = 0;
       this.totalImages = 50;
       this.images = [];
+      this.photosPerView = this.getPhotosPerView();
+      this.totalPages = Math.ceil(this.totalImages / this.photosPerView);
       
       // Initialize images array
       for (let i = 1; i <= this.totalImages; i++) {
@@ -69,31 +54,52 @@
       }
       
       this.init();
+      this.handleResize();
+    }
+    
+    getPhotosPerView() {
+      if (window.innerWidth < 768) return 1; // mobile
+      if (window.innerWidth < 1024) return 2; // tablet
+      return 3; // desktop
     }
     
     init() {
-      this.createThumbnails();
+      this.createPhotos();
       this.createPaginationDots();
       this.bindEvents();
       this.updateDisplay();
     }
     
-    createThumbnails() {
-      const container = document.getElementById('thumbnail-container');
+    createPhotos() {
+      const container = document.getElementById('photo-container');
       container.innerHTML = '';
       
       this.images.forEach((src, index) => {
-        const thumb = document.createElement('div');
-        thumb.className = 'flex-shrink-0 cursor-pointer transition-opacity duration-200 hover:opacity-80';
-        thumb.onclick = () => this.goToImage(index);
+        const photoDiv = document.createElement('div');
+        photoDiv.className = 'flex-shrink-0 w-full';
         
         const img = document.createElement('img');
         img.src = src;
         img.alt = `Track Attack Running photo ${index + 1}`;
-        img.className = 'w-16 h-16 object-cover rounded border-2 border-transparent';
+        img.className = 'w-full h-64 object-cover';
         
-        thumb.appendChild(img);
-        container.appendChild(thumb);
+        photoDiv.appendChild(img);
+        container.appendChild(photoDiv);
+      });
+      
+      // Set container width based on photos per view
+      this.updateContainerWidth();
+    }
+    
+    updateContainerWidth() {
+      const container = document.getElementById('photo-container');
+      const photoWidth = 100 / this.photosPerView;
+      container.style.width = `${this.totalImages * photoWidth}%`;
+      
+      // Update individual photo widths
+      const photos = container.querySelectorAll('div');
+      photos.forEach(photo => {
+        photo.style.width = `${photoWidth}%`;
       });
     }
     
@@ -101,13 +107,10 @@
       const container = document.getElementById('pagination-dots');
       container.innerHTML = '';
       
-      // Show dots for every 5th image to avoid too many dots
-      const dotInterval = Math.ceil(this.totalImages / 10);
-      
-      for (let i = 0; i < this.totalImages; i += dotInterval) {
+      for (let i = 0; i < this.totalPages; i++) {
         const dot = document.createElement('button');
         dot.className = 'w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-colors duration-200';
-        dot.onclick = () => this.goToImage(i);
+        dot.onclick = () => this.goToPage(i);
         container.appendChild(dot);
       }
     }
@@ -122,55 +125,127 @@
         if (e.key === 'ArrowRight') this.next();
       });
       
-      // Auto-advance every 5 seconds (optional)
-      // setInterval(() => this.next(), 5000);
+      // Touch/swipe support
+      let startX = 0;
+      let endX = 0;
+      
+      const container = document.getElementById('photo-container');
+      
+      container.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+      });
+      
+      container.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        this.handleSwipe();
+      });
+      
+      // Mouse drag support for desktop
+      let isDragging = false;
+      let startPos = 0;
+      
+      container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startPos = e.clientX;
+        container.style.cursor = 'grabbing';
+      });
+      
+      container.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+      });
+      
+      container.addEventListener('mouseup', (e) => {
+        if (isDragging) {
+          const endPos = e.clientX;
+          const diff = startPos - endPos;
+          
+          if (Math.abs(diff) > 50) { // Minimum swipe distance
+            if (diff > 0) {
+              this.next();
+            } else {
+              this.previous();
+            }
+          }
+          
+          isDragging = false;
+          container.style.cursor = 'grab';
+        }
+      });
+      
+      container.addEventListener('mouseleave', () => {
+        isDragging = false;
+        container.style.cursor = 'grab';
+      });
+      
+      // Resize handling
+      window.addEventListener('resize', () => this.handleResize());
     }
     
-    goToImage(index) {
-      this.currentIndex = Math.max(0, Math.min(index, this.totalImages - 1));
+    handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = startX - endX;
+      
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          this.next();
+        } else {
+          this.previous();
+        }
+      }
+    }
+    
+    handleResize() {
+      const newPhotosPerView = this.getPhotosPerView();
+      if (newPhotosPerView !== this.photosPerView) {
+        this.photosPerView = newPhotosPerView;
+        this.totalPages = Math.ceil(this.totalImages / this.photosPerView);
+        this.currentPage = Math.min(this.currentPage, this.totalPages - 1);
+        this.createPaginationDots();
+        this.updateContainerWidth();
+        this.updateDisplay();
+      }
+    }
+    
+    goToPage(page) {
+      this.currentPage = Math.max(0, Math.min(page, this.totalPages - 1));
       this.updateDisplay();
     }
     
     previous() {
-      this.currentIndex = this.currentIndex === 0 ? this.totalImages - 1 : this.currentIndex - 1;
+      this.currentPage = this.currentPage === 0 ? this.totalPages - 1 : this.currentPage - 1;
       this.updateDisplay();
     }
     
     next() {
-      this.currentIndex = this.currentIndex === this.totalImages - 1 ? 0 : this.currentIndex + 1;
+      this.currentPage = this.currentPage === this.totalPages - 1 ? 0 : this.currentPage;
       this.updateDisplay();
     }
     
     updateDisplay() {
-      const currentImage = document.getElementById('current-image');
-      const imageCounter = document.getElementById('image-counter');
-      const thumbnails = document.querySelectorAll('#thumbnail-container img');
+      const container = document.getElementById('photo-container');
       const paginationDots = document.querySelectorAll('#pagination-dots button');
       
-      // Update main image
-      currentImage.src = this.images[this.currentIndex];
-      currentImage.alt = `Track Attack Running photo ${this.currentIndex + 1}`;
-      
-      // Update counter
-      imageCounter.textContent = this.currentIndex + 1;
-      
-      // Update thumbnail borders
-      thumbnails.forEach((thumb, index) => {
-        thumb.classList.toggle('border-primary', index === this.currentIndex);
-      });
+      // Calculate transform position
+      const transformX = -(this.currentPage * this.photosPerView * (100 / this.photosPerView));
+      container.style.transform = `translateX(${transformX}%)`;
       
       // Update pagination dots
-      const dotInterval = Math.ceil(this.totalImages / 10);
       paginationDots.forEach((dot, index) => {
-        const dotIndex = index * dotInterval;
-        dot.classList.toggle('bg-primary', dotIndex === this.currentIndex);
-        dot.classList.toggle('bg-gray-300', dotIndex !== this.currentIndex);
+        dot.classList.toggle('bg-primary', index === this.currentPage);
+        dot.classList.toggle('bg-gray-300', index !== this.currentPage);
       });
       
-      // Smooth scroll thumbnail into view
-      const currentThumb = thumbnails[this.currentIndex];
-      if (currentThumb) {
-        currentThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      // Show/hide navigation arrows based on photos per view
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      
+      if (this.photosPerView === 1) {
+        prevBtn.style.display = 'block';
+        nextBtn.style.display = 'block';
+      } else {
+        prevBtn.style.display = 'block';
+        nextBtn.style.display = 'block';
       }
     }
   }
