@@ -1,7 +1,7 @@
 <section id="gallery" class="max-w-4xl mx-auto p-6">
-  <h2 class="text-2xl font-bold text-center mb-8">Photo Gallery</h2>
+  <h2 class="text-2xl font-bold">Gallery</h2>
   
-  <div class="relative">
+  <div class="relative mt-4">
     <!-- Photo Container -->
     <div class="relative overflow-hidden rounded-lg">
       <div id="photo-container" class="flex transition-transform duration-300 ease-in-out">
@@ -24,7 +24,7 @@
         class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 z-10"
         aria-label="Next photos"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>
       </button>
@@ -76,12 +76,12 @@
       
       this.images.forEach((src, index) => {
         const photoDiv = document.createElement('div');
-        photoDiv.className = 'flex-shrink-0 w-full';
+        photoDiv.className = 'flex-shrink-0';
         
         const img = document.createElement('img');
         img.src = src;
         img.alt = `Track Attack Running photo ${index + 1}`;
-        img.className = 'w-full h-64 object-cover';
+        img.className = 'w-full h-64 object-contain bg-gray-100';
         
         photoDiv.appendChild(img);
         container.appendChild(photoDiv);
@@ -133,12 +133,12 @@
       
       container.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
-      });
+      }, { passive: true });
       
       container.addEventListener('touchend', (e) => {
         endX = e.changedTouches[0].clientX;
         this.handleSwipe();
-      });
+      }, { passive: true });
       
       // Mouse drag support for desktop
       let isDragging = false;
@@ -148,6 +148,7 @@
         isDragging = true;
         startPos = e.clientX;
         container.style.cursor = 'grabbing';
+        e.preventDefault();
       });
       
       container.addEventListener('mousemove', (e) => {
@@ -218,7 +219,7 @@
     }
     
     next() {
-      this.currentPage = this.currentPage === this.totalPages - 1 ? 0 : this.currentPage;
+      this.currentPage = this.currentPage === this.totalPages - 1 ? 0 : this.currentPage + 1;
       this.updateDisplay();
     }
     
@@ -235,18 +236,6 @@
         dot.classList.toggle('bg-primary', index === this.currentPage);
         dot.classList.toggle('bg-gray-300', index !== this.currentPage);
       });
-      
-      // Show/hide navigation arrows based on photos per view
-      const prevBtn = document.getElementById('prev-btn');
-      const nextBtn = document.getElementById('next-btn');
-      
-      if (this.photosPerView === 1) {
-        prevBtn.style.display = 'block';
-        nextBtn.style.display = 'block';
-      } else {
-        prevBtn.style.display = 'block';
-        nextBtn.style.display = 'block';
-      }
     }
   }
   
