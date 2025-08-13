@@ -1,246 +1,162 @@
 <section id="gallery" class="max-w-4xl mx-auto p-6">
   <h2 class="text-2xl font-bold">Gallery</h2>
-  
+
   <div class="relative mt-4">
-    <!-- Photo Container -->
-    <div class="relative overflow-hidden rounded-lg">
-      <div id="photo-container" class="flex transition-transform duration-300 ease-in-out">
-        <!-- Photos will be populated by JavaScript -->
-      </div>
-      
-      <!-- Navigation Arrows -->
-      <button 
-        id="prev-btn" 
-        class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 z-10"
-        aria-label="Previous photos"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </button>
-      
-      <button 
-        id="next-btn" 
-        class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 z-10"
-        aria-label="Next photos"
-      >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </button>
+    <!-- Filmstrip scroller -->
+    <div id="scroller" class="flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory rounded-lg p-1"
+         style="-ms-overflow-style: none; scrollbar-width: none;">
+      <!-- cards injected via JS -->
     </div>
-    
-    <!-- Pagination Dots -->
-    <div class="mt-4 flex justify-center space-x-2">
-      <div id="pagination-dots" class="flex space-x-2">
-        <!-- Pagination dots will be populated by JavaScript -->
-      </div>
-    </div>
+
+    <!-- Arrows -->
+    <button id="prev-btn" aria-label="Previous"
+            class="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow transition active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <button id="next-btn" aria-label="Next"
+            class="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow transition active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
+
+    <!-- Pagination dots -->
+    <div class="mt-4 flex justify-center" id="dots"></div>
   </div>
 </section>
 
 <script>
-  class PhotoGallery {
+  class NetflixGallery {
     constructor() {
+      this.images = Array.from({ length: 50 }, (_, i) => `/tar-${String(i + 1).padStart(2, '0')}.png`);
+      this.scroller = document.getElementById('scroller');
+      this.prevBtn = document.getElementById('prev-btn');
+      this.nextBtn = document.getElementById('next-btn');
+      this.dots = document.getElementById('dots');
+      this.cardsPerView = this.getCardsPerView();
+      this.cardHeightPx = 256; // h-64
       this.currentPage = 0;
-      this.totalImages = 50;
-      this.images = [];
-      this.photosPerView = this.getPhotosPerView();
-      this.totalPages = Math.ceil(this.totalImages / this.photosPerView);
-      
-      // Initialize images array
-      for (let i = 1; i <= this.totalImages; i++) {
-        this.images.push(`/tar-${i.toString().padStart(2, '0')}.png`);
-      }
-      
-      this.init();
-      this.handleResize();
+
+      this.renderCards();
+      this.renderDots();
+      this.bind();
+      this.updatePaginationFromScroll();
     }
-    
-    getPhotosPerView() {
-      if (window.innerWidth < 768) return 1; // mobile
-      if (window.innerWidth < 1024) return 2; // tablet
-      return 3; // desktop
+
+    getCardsPerView() {
+      const w = window.innerWidth;
+      if (w < 768) return 1;      // mobile
+      if (w < 1024) return 3;     // tablet
+      return 5;                   // desktop
     }
-    
-    init() {
-      this.createPhotos();
-      this.createPaginationDots();
-      this.bindEvents();
-      this.updateDisplay();
-    }
-    
-    createPhotos() {
-      const container = document.getElementById('photo-container');
-      container.innerHTML = '';
-      
-      this.images.forEach((src, index) => {
-        const photoDiv = document.createElement('div');
-        photoDiv.className = 'flex-shrink-0';
-        
+
+    renderCards() {
+      this.scroller.innerHTML = '';
+      const cardWidthPercent = 100 / this.cardsPerView;
+
+      this.images.forEach((src, idx) => {
+        const card = document.createElement('div');
+        card.className = 'relative shrink-0 snap-start bg-gray-100 rounded-lg overflow-hidden';
+        card.style.width = `${cardWidthPercent}%`;
+        card.style.height = `${this.cardHeightPx}px`;
+
         const img = document.createElement('img');
         img.src = src;
-        img.alt = `Track Attack Running photo ${index + 1}`;
-        img.className = 'w-full h-64 object-contain bg-gray-100';
-        
-        photoDiv.appendChild(img);
-        container.appendChild(photoDiv);
-      });
-      
-      // Set container width based on photos per view
-      this.updateContainerWidth();
-    }
-    
-    updateContainerWidth() {
-      const container = document.getElementById('photo-container');
-      const photoWidth = 100 / this.photosPerView;
-      container.style.width = `${this.totalImages * photoWidth}%`;
-      
-      // Update individual photo widths
-      const photos = container.querySelectorAll('div');
-      photos.forEach(photo => {
-        photo.style.width = `${photoWidth}%`;
+        img.alt = `Photo ${idx + 1}`;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.className = 'w-full h-full object-contain select-none';
+
+        // Plus icon to open raw image in new tab (optional explicit affordance)
+        const plus = document.createElement('a');
+        plus.href = src;
+        plus.target = '_blank';
+        plus.rel = 'noopener';
+        plus.setAttribute('aria-label', 'Open full size');
+        plus.className = 'absolute bottom-2 right-2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-1 shadow hidden md:inline-flex';
+        plus.innerHTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
+
+        card.appendChild(img);
+        card.appendChild(plus);
+        this.scroller.appendChild(card);
       });
     }
-    
-    createPaginationDots() {
-      const container = document.getElementById('pagination-dots');
-      container.innerHTML = '';
-      
-      for (let i = 0; i < this.totalPages; i++) {
+
+    renderDots() {
+      this.dots.innerHTML = '';
+      const pages = Math.ceil(this.images.length / this.cardsPerView);
+      for (let i = 0; i < pages; i++) {
         const dot = document.createElement('button');
-        dot.className = 'w-3 h-3 rounded-full bg-gray-300 hover:bg-gray-400 transition-colors duration-200';
-        dot.onclick = () => this.goToPage(i);
-        container.appendChild(dot);
+        dot.className = 'mx-1 w-2.5 h-2.5 rounded-full bg-gray-300';
+        dot.addEventListener('click', () => this.scrollToPage(i));
+        this.dots.appendChild(dot);
+      }
+      this.updateActiveDot();
+    }
+
+    pageWidth() {
+      return this.scroller.clientWidth; // width of one page of cards
+    }
+
+    scrollToPage(page) {
+      const pages = Math.ceil(this.images.length / this.cardsPerView);
+      this.currentPage = Math.max(0, Math.min(page, pages - 1));
+      this.scroller.scrollTo({ left: this.currentPage * this.pageWidth(), behavior: 'smooth' });
+      this.updateActiveDot();
+    }
+
+    nextPage() { this.scrollToPage(this.currentPage + 1); }
+    prevPage() { this.scrollToPage(this.currentPage - 1); }
+
+    updateActiveDot() {
+      const children = Array.from(this.dots.children);
+      children.forEach((d, i) => d.classList.toggle('bg-primary', i === this.currentPage));
+      children.forEach((d, i) => d.classList.toggle('bg-gray-300', i !== this.currentPage));
+    }
+
+    updatePaginationFromScroll() {
+      const approx = this.scroller.scrollLeft / this.pageWidth();
+      const page = Math.round(approx);
+      if (page !== this.currentPage) {
+        this.currentPage = page;
+        this.updateActiveDot();
       }
     }
-    
-    bindEvents() {
-      document.getElementById('prev-btn').onclick = () => this.previous();
-      document.getElementById('next-btn').onclick = () => this.next();
-      
-      // Keyboard navigation
+
+    bind() {
+      // Arrow buttons
+      this.prevBtn.addEventListener('click', () => this.prevPage());
+      this.nextBtn.addEventListener('click', () => this.nextPage());
+
+      // Keyboard
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') this.previous();
-        if (e.key === 'ArrowRight') this.next();
+        if (e.key === 'ArrowLeft') this.prevPage();
+        if (e.key === 'ArrowRight') this.nextPage();
+        if (e.key === 'Home') this.scrollToPage(0);
+        if (e.key === 'End') this.scrollToPage(Math.ceil(this.images.length / this.cardsPerView) - 1);
       });
-      
-      // Touch/swipe support
-      let startX = 0;
-      let endX = 0;
-      
-      const container = document.getElementById('photo-container');
-      
-      container.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
+
+      // Native swipe/drag works via overflow-x with scroll-snap; keep dot state synced
+      this.scroller.addEventListener('scroll', () => {
+        // debounce-ish via requestAnimationFrame
+        if (this._raf) cancelAnimationFrame(this._raf);
+        this._raf = requestAnimationFrame(() => this.updatePaginationFromScroll());
       }, { passive: true });
-      
-      container.addEventListener('touchend', (e) => {
-        endX = e.changedTouches[0].clientX;
-        this.handleSwipe();
-      }, { passive: true });
-      
-      // Mouse drag support for desktop
-      let isDragging = false;
-      let startPos = 0;
-      
-      container.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startPos = e.clientX;
-        container.style.cursor = 'grabbing';
-        e.preventDefault();
-      });
-      
-      container.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-      });
-      
-      container.addEventListener('mouseup', (e) => {
-        if (isDragging) {
-          const endPos = e.clientX;
-          const diff = startPos - endPos;
-          
-          if (Math.abs(diff) > 50) { // Minimum swipe distance
-            if (diff > 0) {
-              this.next();
-            } else {
-              this.previous();
-            }
-          }
-          
-          isDragging = false;
-          container.style.cursor = 'grab';
+
+      // Resize: recompute cards per view and re-render widths/dots but keep index near current
+      window.addEventListener('resize', () => {
+        const beforeLeft = this.scroller.scrollLeft;
+        const beforePage = Math.round(beforeLeft / this.pageWidth());
+        const newCpv = this.getCardsPerView();
+        if (newCpv !== this.cardsPerView) {
+          this.cardsPerView = newCpv;
+          this.renderCards();
+          this.renderDots();
+          this.scrollToPage(beforePage);
         }
-      });
-      
-      container.addEventListener('mouseleave', () => {
-        isDragging = false;
-        container.style.cursor = 'grab';
-      });
-      
-      // Resize handling
-      window.addEventListener('resize', () => this.handleResize());
-    }
-    
-    handleSwipe() {
-      const swipeThreshold = 50;
-      const diff = startX - endX;
-      
-      if (Math.abs(diff) > swipeThreshold) {
-        if (diff > 0) {
-          this.next();
-        } else {
-          this.previous();
-        }
-      }
-    }
-    
-    handleResize() {
-      const newPhotosPerView = this.getPhotosPerView();
-      if (newPhotosPerView !== this.photosPerView) {
-        this.photosPerView = newPhotosPerView;
-        this.totalPages = Math.ceil(this.totalImages / this.photosPerView);
-        this.currentPage = Math.min(this.currentPage, this.totalPages - 1);
-        this.createPaginationDots();
-        this.updateContainerWidth();
-        this.updateDisplay();
-      }
-    }
-    
-    goToPage(page) {
-      this.currentPage = Math.max(0, Math.min(page, this.totalPages - 1));
-      this.updateDisplay();
-    }
-    
-    previous() {
-      this.currentPage = this.currentPage === 0 ? this.totalPages - 1 : this.currentPage - 1;
-      this.updateDisplay();
-    }
-    
-    next() {
-      this.currentPage = this.currentPage === this.totalPages - 1 ? 0 : this.currentPage + 1;
-      this.updateDisplay();
-    }
-    
-    updateDisplay() {
-      const container = document.getElementById('photo-container');
-      const paginationDots = document.querySelectorAll('#pagination-dots button');
-      
-      // Calculate transform position
-      const transformX = -(this.currentPage * this.photosPerView * (100 / this.photosPerView));
-      container.style.transform = `translateX(${transformX}%)`;
-      
-      // Update pagination dots
-      paginationDots.forEach((dot, index) => {
-        dot.classList.toggle('bg-primary', index === this.currentPage);
-        dot.classList.toggle('bg-gray-300', index !== this.currentPage);
       });
     }
   }
-  
-  // Initialize gallery when DOM is loaded
+
   document.addEventListener('DOMContentLoaded', () => {
-    new PhotoGallery();
+    new NetflixGallery();
   });
 </script>
