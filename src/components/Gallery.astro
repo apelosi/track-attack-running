@@ -32,14 +32,13 @@
       this.nextBtn = document.getElementById('next-btn');
       this.dots = document.getElementById('dots');
       this.cardsPerView = this.getCardsPerView();
-      this.cardHeightPx = 240; // slightly shorter to reduce gray; was 256
+      this.cardHeightPx = 240; // slightly shorter to reduce gray
       this.currentPage = 0;
       this.cardWidthPx = 0;
       this.gapPx = 0;
-      this.paddingLeftPx = 0;
 
       this.renderCards();
-      this.measureLayout();
+      this.applyLayoutSizes();
       this.renderDots();
       this.bind();
       this.updatePaginationFromScroll();
@@ -54,12 +53,10 @@
 
     renderCards() {
       this.scroller.innerHTML = '';
-      const cardWidthPercent = 100 / this.cardsPerView;
 
       this.images.forEach((src, idx) => {
         const card = document.createElement('div');
         card.className = 'relative shrink-0 snap-start rounded-lg overflow-hidden bg-gray-100';
-        card.style.width = `${cardWidthPercent}%`;
         card.style.height = `${this.cardHeightPx}px`;
 
         const img = document.createElement('img');
@@ -84,15 +81,17 @@
       });
     }
 
-    measureLayout() {
-      const firstCard = this.scroller.children[0];
-      if (!firstCard) return;
-      const rect = firstCard.getBoundingClientRect();
-      this.cardWidthPx = rect.width;
+    applyLayoutSizes() {
+      // Compute exact pixel width per card so N cards fit including gaps
       const styles = getComputedStyle(this.scroller);
-      // columnGap covers flex gap
       this.gapPx = parseFloat(styles.columnGap || styles.gap || '0') || 0;
-      this.paddingLeftPx = parseFloat(styles.paddingLeft || '0') || 0;
+      const innerWidth = this.scroller.clientWidth; // includes padding
+      const visibleWidth = innerWidth - this.gapPx * (this.cardsPerView - 1);
+      this.cardWidthPx = Math.floor(visibleWidth / this.cardsPerView);
+
+      Array.from(this.scroller.children).forEach((card) => {
+        card.style.width = `${this.cardWidthPx}px`;
+      });
     }
 
     renderDots() {
@@ -121,7 +120,7 @@
       const index = this.currentPage * this.cardsPerView;
       const targetCard = this.scroller.children[index];
       if (targetCard) {
-        const left = targetCard.offsetLeft - this.paddingLeftPx;
+        const left = targetCard.offsetLeft; // card widths already exact; offset accounts for gaps/padding
         this.scroller.scrollTo({ left, behavior: 'smooth' });
       }
       this.updateActiveDot();
@@ -138,7 +137,7 @@
 
     updatePaginationFromScroll() {
       if (this.cardsPerView === 1) return; // dots hidden
-      if (!this.cardWidthPx) this.measureLayout();
+      if (!this.cardWidthPx) this.applyLayoutSizes();
       const step = this.cardWidthPx + this.gapPx;
       const approxIndex = Math.round(this.scroller.scrollLeft / step);
       const page = Math.floor(approxIndex / this.cardsPerView);
@@ -173,13 +172,12 @@
         if (newCpv !== this.cardsPerView) {
           const beforeIndex = this.currentPage * this.cardsPerView;
           this.cardsPerView = newCpv;
-          this.renderCards();
-          this.measureLayout();
+          this.applyLayoutSizes();
           this.renderDots();
           const targetPage = Math.floor(beforeIndex / this.cardsPerView);
           this.scrollToPage(targetPage);
         } else {
-          this.measureLayout();
+          this.applyLayoutSizes();
         }
       });
     }
