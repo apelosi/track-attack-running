@@ -1,4 +1,5 @@
-<section id="gallery" class="max-w-4xl mx-auto p-6">
+<section id="gallery" class="max-w-4xl mx-auto p-6 reveal">
+  <div class="h-1.5 bg-gradient-to-r from-primary to-accentLight rounded-full mb-4 -skew-x-6"></div>
   <h2 class="text-2xl font-bold">Gallery</h2>
 
   <div class="relative mt-4">
@@ -10,11 +11,11 @@
 
     <!-- Arrows -->
     <button id="prev-btn" aria-label="Previous"
-            class="absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow transition active:scale-95">
+            class="absolute left-0 top-1/2 -translate-y-1/2 bg-white text-kineticBlack p-2 rounded-full shadow-md ring-1 ring-black/5 hover:shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
     </button>
     <button id="next-btn" aria-label="Next"
-            class="absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow transition active:scale-95">
+            class="absolute right-0 top-1/2 -translate-y-1/2 bg-white text-kineticBlack p-2 rounded-full shadow-md ring-1 ring-black/5 hover:shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
     </button>
 
@@ -32,7 +33,7 @@
       this.nextBtn = document.getElementById('next-btn');
       this.dots = document.getElementById('dots');
       this.cardsPerView = this.getCardsPerView();
-      this.cardHeightPx = 240; // slightly shorter to reduce gray
+      this.cardHeightPx = 240;
       this.currentPage = 0;
       this.cardWidthPx = 0;
       this.gapPx = 0;
@@ -46,9 +47,9 @@
 
     getCardsPerView() {
       const w = window.innerWidth;
-      if (w < 768) return 1;      // mobile and narrow windows
-      if (w < 1024) return 3;     // tablet
-      return 5;                   // desktop
+      if (w < 768) return 1;
+      if (w < 1024) return 3;
+      return 5;
     }
 
     renderCards() {
@@ -56,7 +57,7 @@
 
       this.images.forEach((src, idx) => {
         const card = document.createElement('div');
-        card.className = 'relative shrink-0 snap-start rounded-lg overflow-hidden bg-gray-100';
+        card.className = 'relative shrink-0 snap-start rounded-lg overflow-hidden bg-gray-100 ring-1 ring-black/5 card-hover';
         card.style.height = `${this.cardHeightPx}px`;
 
         const img = document.createElement('img');
@@ -64,7 +65,6 @@
         img.alt = `Photo ${idx + 1}`;
         img.loading = 'lazy';
         img.decoding = 'async';
-        // Fill cards on all breakpoints for minimal gray; allows some crop on tall portraits
         img.className = 'w-full h-full object-cover select-none';
 
         const plus = document.createElement('a');
@@ -72,7 +72,7 @@
         plus.target = '_blank';
         plus.rel = 'noopener';
         plus.setAttribute('aria-label', 'Open full size');
-        plus.className = 'absolute bottom-2 right-2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-1 shadow hidden md:inline-flex';
+        plus.className = 'absolute bottom-2 right-2 bg-white/95 text-kineticBlack rounded-full p-1 shadow hidden md:inline-flex';
         plus.innerHTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
 
         card.appendChild(img);
@@ -82,25 +82,19 @@
     }
 
     applyLayoutSizes() {
-      // Compute exact pixel width per card so N cards fit including gaps
       const styles = getComputedStyle(this.scroller);
       this.gapPx = parseFloat(styles.columnGap || styles.gap || '0') || 0;
-      const innerWidth = this.scroller.clientWidth; // includes padding
+      const innerWidth = this.scroller.clientWidth;
       const visibleWidth = innerWidth - this.gapPx * (this.cardsPerView - 1);
       this.cardWidthPx = Math.floor(visibleWidth / this.cardsPerView);
-
-      Array.from(this.scroller.children).forEach((card) => {
-        card.style.width = `${this.cardWidthPx}px`;
-      });
+      Array.from(this.scroller.children).forEach((card) => { card.style.width = `${this.cardWidthPx}px`; });
     }
 
     renderDots() {
       this.dots.innerHTML = '';
       const pages = Math.ceil(this.images.length / this.cardsPerView);
-      // Hide dots when only 1 card per view
       this.dots.style.display = (this.cardsPerView === 1) ? 'none' : 'flex';
       if (this.cardsPerView === 1) return;
-
       for (let i = 0; i < pages; i++) {
         const dot = document.createElement('button');
         dot.className = 'mx-1 w-2.5 h-2.5 rounded-full bg-gray-300';
@@ -110,9 +104,7 @@
       this.updateActiveDot();
     }
 
-    pageCount() {
-      return Math.ceil(this.images.length / this.cardsPerView);
-    }
+    pageCount() { return Math.ceil(this.images.length / this.cardsPerView); }
 
     scrollToPage(page) {
       const pages = this.pageCount();
@@ -120,7 +112,7 @@
       const index = this.currentPage * this.cardsPerView;
       const targetCard = this.scroller.children[index];
       if (targetCard) {
-        const left = targetCard.offsetLeft; // card widths already exact; offset accounts for gaps/padding
+        const left = targetCard.offsetLeft;
         this.scroller.scrollTo({ left, behavior: 'smooth' });
       }
       this.updateActiveDot();
@@ -136,37 +128,25 @@
     }
 
     updatePaginationFromScroll() {
-      if (this.cardsPerView === 1) return; // dots hidden
+      if (this.cardsPerView === 1) return;
       if (!this.cardWidthPx) this.applyLayoutSizes();
       const step = this.cardWidthPx + this.gapPx;
       const approxIndex = Math.round(this.scroller.scrollLeft / step);
       const page = Math.floor(approxIndex / this.cardsPerView);
-      if (page !== this.currentPage) {
-        this.currentPage = page;
-        this.updateActiveDot();
-      }
+      if (page !== this.currentPage) { this.currentPage = page; this.updateActiveDot(); }
     }
 
     bind() {
-      // Arrow buttons
       this.prevBtn.addEventListener('click', () => this.prevPage());
       this.nextBtn.addEventListener('click', () => this.nextPage());
-
-      // Keyboard
       document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') this.prevPage();
         if (e.key === 'ArrowRight') this.nextPage();
-        if (e.key === 'Home') this.scrollToPage(0);
-        if (e.key === 'End') this.scrollToPage(this.pageCount() - 1);
       });
-
-      // Sync dots with native scroll (swipe/drag)
       this.scroller.addEventListener('scroll', () => {
         if (this._raf) cancelAnimationFrame(this._raf);
         this._raf = requestAnimationFrame(() => this.updatePaginationFromScroll());
       }, { passive: true });
-
-      // Resize: recompute layout and toggle dots
       window.addEventListener('resize', () => {
         const newCpv = this.getCardsPerView();
         if (newCpv !== this.cardsPerView) {
@@ -176,14 +156,10 @@
           this.renderDots();
           const targetPage = Math.floor(beforeIndex / this.cardsPerView);
           this.scrollToPage(targetPage);
-        } else {
-          this.applyLayoutSizes();
-        }
+        } else { this.applyLayoutSizes(); }
       });
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    new NetflixGallery();
-  });
+  document.addEventListener('DOMContentLoaded', () => { new NetflixGallery(); });
 </script>

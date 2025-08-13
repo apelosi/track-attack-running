@@ -1,0 +1,25 @@
+---
+---
+<script>
+  // Toggle .is-visible on elements with .reveal when they enter the viewport
+  (function () {
+    const onReady = () => {
+      const els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach((el) => el.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
+      }, { threshold: 0.12 });
+      els.forEach((el) => io.observe(el));
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', onReady);
+    } else {
+      onReady();
+    }
+  })();
+  </script>
+
+

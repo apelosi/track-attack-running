@@ -32,37 +32,33 @@ const { title = "Track Attack Running", description = "Fun, fast group workouts 
     <meta name="theme-color" content="#D7322A" />
 
   </head>
-    <body class="bg-white text-gray-900">
-      <header class="relative overflow-visible bg-gradient-to-r from-primary via-accent to-accentLight text-white">
-        <nav class="max-w-6xl mx-auto flex justify-between items-center p-4">
-          <div class="flex items-center space-x-3">
-            <img src="/logo.svg" alt="Track Attack Running logo" class="w-12 h-12" />
-            <span class="text-lg font-bold">Track Attack Running</span>
+    <body class="bg-white text-kineticBlack">
+      <header class="sticky top-0 z-40 bg-kineticBlack text-white border-b-2 border-primary">
+        <nav class="max-w-6xl mx-auto flex justify-between items-center px-4 py-3">
+          <a href="/" class="flex items-baseline gap-2">
+            <span class="font-display uppercase tracking-tight text-xl">Track Attack</span>
+            <span class="font-display uppercase tracking-tight text-xl text-primary">Running</span>
+          </a>
+          <div class="flex items-center gap-6 text-sm">
+            <a href="/#contact" class="px-3 py-1.5 bg-primary text-white rounded hover:bg-primaryDark transition-colors">Contact Us</a>
           </div>
-          <a href="#contact" class="font-medium hover:underline">Contact</a>
         </nav>
       </header>
       <main class="pt-12">
         <slot />
       </main>
-      <footer class="bg-gradient-to-r from-primary via-accent to-accentLight text-white mt-10">
-        <div class="max-w-6xl mx-auto p-4">
-          <!-- Logo and links row -->
-          <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center space-x-3">
-              <img src="/logo.svg" alt="Track Attack Running logo" class="w-10 h-10" />
-            </div>
-            <div class="space-x-4 text-sm">
-              <a href="/terms" class="hover:underline">Terms of Use</a>
-              <a href="/privacy" class="hover:underline">Privacy Policy</a>
-              <a href="#contact" class="hover:underline">Contact</a>
+      <footer class="mt-16 bg-kineticBlack text-white">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <a href="/" class="font-display uppercase tracking-tight text-lg">Track Attack <span class="text-primary">Running</span></a>
+            <div class="flex items-center gap-6 text-sm">
+              <a href="/terms" class="hover:text-accentLight transition-colors">Terms of Use</a>
+              <a href="/privacy" class="hover:text-accentLight transition-colors">Privacy Policy</a>
+              <a href="/#contact" class="hover:text-accentLight transition-colors">Contact Us</a>
             </div>
           </div>
-          
-          <!-- Copyright row -->
-          <div class="text-center text-sm">
-            <p>© 2025 Track Attack Running™</p>
-          </div>
+          <div class="mt-6 h-0.5 bg-gradient-to-r from-primary via-accent to-accentLight"></div>
+          <p class="mt-4 text-center text-xs text-white/80">© 2025 Track Attack Running™</p>
         </div>
       </footer>
       <CommitInfo />

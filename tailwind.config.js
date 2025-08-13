@@ -7,7 +7,12 @@ export default {
         primary: "#D7322A",
         primaryDark: "#A91B20",
         accent: "#CC422E",
-        accentLight: "#EE565B"
+        accentLight: "#EE565B",
+        kineticBlack: "#0B0B0B"
+      },
+      fontFamily: {
+        display: ["Oswald", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"]
       }
     }
   },

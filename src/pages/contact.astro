@@ -1,0 +1,23 @@
+---
+// Static redirect page to send users to the Contact Us form on the homepage
+export const prerender = true;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <meta http-equiv="refresh" content="0; url=/#contact" />
+    <link rel="canonical" href="/#contact" />
+    <script>
+      if (typeof window !== 'undefined') {
+        window.location.replace('/#contact');
+      }
+    </script>
+  </head>
+  <body>
+    <p>Redirecting to Contact Us… If not redirected, <a href="/#contact">click here</a>.</p>
+  </body>
+</html>
+
+
