@@ -32,10 +32,14 @@
       this.nextBtn = document.getElementById('next-btn');
       this.dots = document.getElementById('dots');
       this.cardsPerView = this.getCardsPerView();
-      this.cardHeightPx = 256; // h-64
+      this.cardHeightPx = 240; // slightly shorter to reduce gray; was 256
       this.currentPage = 0;
+      this.cardWidthPx = 0;
+      this.gapPx = 0;
+      this.paddingLeftPx = 0;
 
       this.renderCards();
+      this.measureLayout();
       this.renderDots();
       this.bind();
       this.updatePaginationFromScroll();
@@ -43,7 +47,7 @@
 
     getCardsPerView() {
       const w = window.innerWidth;
-      if (w < 768) return 1;      // mobile
+      if (w < 768) return 1;      // mobile and narrow windows
       if (w < 1024) return 3;     // tablet
       return 5;                   // desktop
     }
@@ -54,7 +58,7 @@
 
       this.images.forEach((src, idx) => {
         const card = document.createElement('div');
-        card.className = 'relative shrink-0 snap-start bg-gray-100 rounded-lg overflow-hidden';
+        card.className = 'relative shrink-0 snap-start rounded-lg overflow-hidden bg-gray-100';
         card.style.width = `${cardWidthPercent}%`;
         card.style.height = `${this.cardHeightPx}px`;
 
@@ -63,9 +67,9 @@
         img.alt = `Photo ${idx + 1}`;
         img.loading = 'lazy';
         img.decoding = 'async';
-        img.className = 'w-full h-full object-contain select-none';
+        // Fill cards on all breakpoints for minimal gray; allows some crop on tall portraits
+        img.className = 'w-full h-full object-cover select-none';
 
-        // Plus icon to open raw image in new tab (optional explicit affordance)
         const plus = document.createElement('a');
         plus.href = src;
         plus.target = '_blank';
@@ -80,9 +84,24 @@
       });
     }
 
+    measureLayout() {
+      const firstCard = this.scroller.children[0];
+      if (!firstCard) return;
+      const rect = firstCard.getBoundingClientRect();
+      this.cardWidthPx = rect.width;
+      const styles = getComputedStyle(this.scroller);
+      // columnGap covers flex gap
+      this.gapPx = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+      this.paddingLeftPx = parseFloat(styles.paddingLeft || '0') || 0;
+    }
+
     renderDots() {
       this.dots.innerHTML = '';
       const pages = Math.ceil(this.images.length / this.cardsPerView);
+      // Hide dots when only 1 card per view
+      this.dots.style.display = (this.cardsPerView === 1) ? 'none' : 'flex';
+      if (this.cardsPerView === 1) return;
+
       for (let i = 0; i < pages; i++) {
         const dot = document.createElement('button');
         dot.className = 'mx-1 w-2.5 h-2.5 rounded-full bg-gray-300';
@@ -92,14 +111,19 @@
       this.updateActiveDot();
     }
 
-    pageWidth() {
-      return this.scroller.clientWidth; // width of one page of cards
+    pageCount() {
+      return Math.ceil(this.images.length / this.cardsPerView);
     }
 
     scrollToPage(page) {
-      const pages = Math.ceil(this.images.length / this.cardsPerView);
+      const pages = this.pageCount();
       this.currentPage = Math.max(0, Math.min(page, pages - 1));
-      this.scroller.scrollTo({ left: this.currentPage * this.pageWidth(), behavior: 'smooth' });
+      const index = this.currentPage * this.cardsPerView;
+      const targetCard = this.scroller.children[index];
+      if (targetCard) {
+        const left = targetCard.offsetLeft - this.paddingLeftPx;
+        this.scroller.scrollTo({ left, behavior: 'smooth' });
+      }
       this.updateActiveDot();
     }
 
@@ -113,8 +137,11 @@
     }
 
     updatePaginationFromScroll() {
-      const approx = this.scroller.scrollLeft / this.pageWidth();
-      const page = Math.round(approx);
+      if (this.cardsPerView === 1) return; // dots hidden
+      if (!this.cardWidthPx) this.measureLayout();
+      const step = this.cardWidthPx + this.gapPx;
+      const approxIndex = Math.round(this.scroller.scrollLeft / step);
+      const page = Math.floor(approxIndex / this.cardsPerView);
       if (page !== this.currentPage) {
         this.currentPage = page;
         this.updateActiveDot();
@@ -131,26 +158,28 @@
         if (e.key === 'ArrowLeft') this.prevPage();
         if (e.key === 'ArrowRight') this.nextPage();
         if (e.key === 'Home') this.scrollToPage(0);
-        if (e.key === 'End') this.scrollToPage(Math.ceil(this.images.length / this.cardsPerView) - 1);
+        if (e.key === 'End') this.scrollToPage(this.pageCount() - 1);
       });
 
-      // Native swipe/drag works via overflow-x with scroll-snap; keep dot state synced
+      // Sync dots with native scroll (swipe/drag)
       this.scroller.addEventListener('scroll', () => {
-        // debounce-ish via requestAnimationFrame
         if (this._raf) cancelAnimationFrame(this._raf);
         this._raf = requestAnimationFrame(() => this.updatePaginationFromScroll());
       }, { passive: true });
 
-      // Resize: recompute cards per view and re-render widths/dots but keep index near current
+      // Resize: recompute layout and toggle dots
       window.addEventListener('resize', () => {
-        const beforeLeft = this.scroller.scrollLeft;
-        const beforePage = Math.round(beforeLeft / this.pageWidth());
         const newCpv = this.getCardsPerView();
         if (newCpv !== this.cardsPerView) {
+          const beforeIndex = this.currentPage * this.cardsPerView;
           this.cardsPerView = newCpv;
           this.renderCards();
+          this.measureLayout();
           this.renderDots();
-          this.scrollToPage(beforePage);
+          const targetPage = Math.floor(beforeIndex / this.cardsPerView);
+          this.scrollToPage(targetPage);
+        } else {
+          this.measureLayout();
         }
       });
     }
