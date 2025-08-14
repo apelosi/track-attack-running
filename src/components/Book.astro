@@ -1,7 +1,16 @@
 <section id="book" class="max-w-4xl mx-auto p-6 reveal">
-  <div class="h-1.5 bg-gradient-to-r from-primary to-accentLight rounded-full mb-4 -skew-x-6"></div>
   <h2 class="text-2xl font-bold">Book</h2>
-  <p class="mt-4">We are distilling years of group running interval workout design into a practical playbook for coaches who want to help their athletes, groups who want to help their members, and individuals who want to help themselves get faster from 5ks to marathons. The most important aspect of speed and skill work is actually doing it, and this playbook will help make this critical component of running a weekly habit.</p>
+  <!-- Coming Soon full-width card -->
+  <div class="mt-4 rounded-xl overflow-hidden ring-1 ring-black/10 bg-white shadow-sm card-hover">
+    <div class="px-4 py-3 flex items-baseline justify-between">
+      <div class="font-display text-lg">Coming Soon…</div>
+    </div>
+    <div class="p-4">
+      <p>
+        We are distilling years of group running interval workout design into a practical playbook for coaches who want to help their athletes, groups who want to help their members, and individuals who want to help themselves get faster from 5ks to marathons. The most important aspect of speed and skill work is actually doing it, and this playbook will help make this critical component of running a weekly habit.
+      </p>
+    </div>
+  </div>
 
   <!-- Cover: now full width -->
   <div class="mt-6">
@@ -34,11 +43,15 @@
           <span class="px-2 py-1 bg-gray-50 rounded rotate-[-2deg] ring-1 ring-black/5">Cutting Corners</span>
           <span class="px-2 py-1 bg-gray-50 rounded rotate-2 ring-1 ring-black/5">On… Off… On!</span>
           <span class="px-2 py-1 bg-gray-50 rounded rotate-[-6deg] ring-1 ring-black/5">The Fastest Mile</span>
+          <span class="px-2 py-1 bg-gray-50 rounded rotate-1 ring-1 ring-black/5">Claw! Claw! Claw!</span>
+          <span class="px-2 py-1 bg-gray-50 rounded rotate-[-2deg] ring-1 ring-black/5">Easium</span>
         </div>
       </div>
     </div>
 
   </div>
+
+  
 
   <!-- Contents & Benefits in boxed cards similar to lesson plan -->
   <div class="mt-6 grid md:grid-cols-2 gap-4">
@@ -73,11 +86,14 @@
   <!-- Full-width lesson plan at the bottom -->
   <div class="mt-6">
     <div class="rounded-xl overflow-hidden ring-1 ring-black/10 bg-white card-hover">
-      <div class="px-4 py-3 flex items-baseline justify-between">
-        <div class="font-display text-lg">Sample Lesson Plan</div>
+      <button class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-50 transition-colors" type="button" onclick="const b=this.querySelector('[data-icon]'); const p=this.nextElementSibling; p.classList.toggle('hidden'); b.textContent = p.classList.contains('hidden') ? '▾' : '▴';">
+        <div class="flex items-center gap-2">
+          <span data-icon class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white font-bold">▾</span>
+          <div class="font-display text-lg">Sample Lesson Plan</div>
+        </div>
         <div class="text-xs uppercase tracking-wider text-kineticBlack/60">Build Phase #7</div>
-      </div>
-      <div class="p-4 text-sm space-y-3">
+      </button>
+      <div class="p-4 text-sm space-y-3 hidden">
         <div class="grid grid-cols-2 gap-2">
           <!-- Warm-up merged -->
           <div class="col-span-2 uppercase text-xs tracking-wider text-kineticBlack/60">Warm‑up</div>
@@ -97,9 +113,9 @@
           <div class="rounded-lg bg-gray-50 p-3 ring-1 ring-black/5">
             <div class="text-xs uppercase tracking-wider text-kineticBlack/60 mb-1">Full</div>
             <ul class="list-disc pl-5 space-y-1">
-              <li>2×1200 (medium, last 400 med‑hard)</li>
-              <li>2×800 (medium, last 200 med‑hard)</li>
-              <li>2×400 (medium, last 100 med‑hard)</li>
+              <li>2×1200 (medium, last 400 mediard)</li>
+              <li>2×800 (medium, last 200 mediard)</li>
+              <li>2×400 (medium, last 100 mediard)</li>
               <li>200m jog recovery between reps</li>
             </ul>
           </div>
@@ -109,7 +125,7 @@
               <li>1200 (medium)</li>
               <li>800 (medium)</li>
               <li>400 (medium)</li>
-              <li>200m recovery</li>
+              <li>200m jog recovery between reps</li>
             </ul>
           </div>
           <!-- Cool-down merged -->
