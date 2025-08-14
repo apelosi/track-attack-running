@@ -42,3 +42,7 @@
   transition: width 160ms ease-out;
 }
 .link-kinetic:hover::after, .link-kinetic:focus-visible::after { width: 100%; }
+
+/* Approach A: subtle SVG-like track lanes as backgrounds on select sections */
+/* removed lanes accent */
+

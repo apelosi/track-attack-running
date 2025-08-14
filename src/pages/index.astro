@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Hero from "../components/Hero.astro";
 import About from "../components/About.astro";
-import Founders from "../components/Founders.astro";
+import Coaches from "../components/Coaches.astro";
 import Gallery from "../components/Gallery.astro";
 import Book from "../components/Book.astro";
 import Contact from "../components/Contact.astro";
@@ -12,8 +12,11 @@ import RevealScript from "../components/RevealScript.astro";
   <RevealScript />
   <Hero />
   <About />
-  <Founders />
+  <Coaches />
   <Gallery />
   <Book />
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="h-1.5 bg-gradient-to-r from-primary to-accentLight rounded-full -skew-x-6"></div>
+  </div>
   <Contact />
 </Layout>
