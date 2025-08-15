@@ -108,46 +108,20 @@
             <section id="coaches" class="max-w-4xl mx-auto p-6 reveal">
                 <h2 class="text-2xl font-bold">Coaches</h2>
                 
-                <!-- History Box -->
-                <div class="bg-white rounded-xl shadow-lg p-8 mt-4 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                    <h3 class="font-display text-lg mb-6">History</h3>
-                    <div class="relative">
-                        <img src="public/tar-founders.png" alt="Track Attack Running founders Tony Pelosi and Chi-An Emhoff" class="float-left w-1/2 h-auto rounded-lg mr-6 mb-4 shadow-lg">
-                        <p class="mb-4">Track Attack Running originated at American River College in Sacramento in 2004. It was founded by Tony Pelosi and Chi-An (Wang) Emhoff as part of Total Body Fitness before launching their own business in 2007. As collegiate track captains who went on to become competitive amateur triathletes, they adapted lessons from masters swimming to turn monotonous track workouts into fun and engaging group experiences that could be enjoyed by athletes of all levels.</p>
-                        <div class="clear-both"></div>
-                    </div>
+                <!-- Mobile layout: image full width above text -->
+                <div class="md:hidden mt-4">
+                    <img src="public/tar-founders.png" alt="Tony Pelosi and Chi-An Emhoff, founders of Track Attack Running" class="w-full h-auto rounded-lg mb-4">
+                    <p class="mb-4">Track Attack Running originated at American River College in Sacramento in 2004. It was founded by Tony Pelosi and Chi-An (Wang) Emhoff as part of Total Body Fitness before launching their own business in 2007. As collegiate track captains who went on to become competitive amateur triathletes, they adapted lessons from masters swimming to turn monotonous track workouts into fun and engaging group experiences that could be enjoyed by athletes of all levels.</p>
+                    <p>As an engineer and product manager, Tony has also launched fitness applications and devices at Garmin and Magellan, while Chi-An, who has a Ph.D. in Exercise Physiology from UC Berkeley, is a Professor of Health Science and Kinesiology at Saint Mary's College of California.</p>
                 </div>
-
-                <!-- Individual Coaches -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-                    <!-- Tony Pelosi -->
-                    <div class="bg-white rounded-xl shadow-lg p-8 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                        <h3 class="font-display text-lg mb-4">
-                            Tony Pelosi
-                        </h3>
-                        <p class="text-sm mb-2">
-                            <a href="https://www.linkedin.com/in/apelosi/" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primaryDark transition-colors duration-200">
-                                LinkedIn
-                            </a>
-                        </p>
-                        <p>
-                            As an engineer and product manager, Tony has also launched fitness applications and devices at Garmin and Magellan.
-                        </p>
-                    </div>
-
-                    <!-- Chi-An Emhoff -->
-                    <div class="bg-white rounded-xl shadow-lg p-8 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-                        <h3 class="font-display text-lg mb-4">
-                            Chi-An (Wang) Emhoff
-                        </h3>
-                        <p class="text-sm mb-2">
-                            <a href="https://www.linkedin.com/in/chianemhoff/" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primaryDark transition-colors duration-200">
-                                LinkedIn
-                            </a>
-                        </p>
-                        <p>
-                            Chi-An has a Ph.D. in Exercise Physiology from UC Berkeley and is a Professor of Kinesiology at Saint Mary's College of California.
-                        </p>
+                
+                <!-- Desktop layout: image left, text wrapping around -->
+                <div class="hidden md:block mt-4">
+                    <div class="relative">
+                        <img src="public/tar-founders.png" alt="Tony Pelosi and Chi-An Emhoff, founders of Track Attack Running" class="float-left w-1/2 h-auto rounded-lg mr-6 mb-4 shadow-lg">
+                        <p class="mb-4">Track Attack Running originated at American River College in Sacramento in 2004. It was founded by Tony Pelosi and Chi-An (Wang) Emhoff as part of Total Body Fitness before launching their own business in 2007. As collegiate track captains who went on to become competitive amateur triathletes, they adapted lessons from masters swimming to turn monotonous track workouts into fun and engaging group experiences that could be enjoyed by athletes of all levels.</p>
+                        <p>As an engineer and product manager, Tony has also launched fitness applications and devices at Garmin and Magellan, while Chi-An, who has a Ph.D. in Exercise Physiology from UC Berkeley, is a Professor of Kinesiology at Saint Mary's College of California.</p>
+                        <div class="clear-both"></div>
                     </div>
                 </div>
             </section>
@@ -206,7 +180,7 @@
                             <div class="text-xs opacity-90">Achieve personal bests with interval‑based running workouts</div>
                         </div>
                         <div class="p-4 flex flex-col items-center gap-4 w-full">
-                            <img src="public/logo-tar.svg" alt="Track Attack Running logo" class="w-28 h-auto" />
+                            <img src="/logo-tar.svg" alt="Track Attack Running logo" class="w-28 h-auto" />
                             <!-- Workout names cloud fills full width; wraps responsively -->
                             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 w-full place-items-center text-xs font-semibold text-kineticBlack/80">
                                 <span class="px-2 py-1 bg-gray-50 rounded rotate-[-6deg] ring-1 ring-black/5">Catch‑Up Relay</span>
@@ -394,21 +368,7 @@
     </footer>
 
     <!-- Commit Info -->
-    <div class="bg-gray-100 border-t border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 py-4">
-            <div class="rounded-lg overflow-hidden ring-1 ring-gray-300">
-                <button class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-gray-200 transition-colors" type="button" onclick="toggleCommitInfo(this)">
-                    <div class="flex items-center gap-2">
-                        <span data-icon class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-600 text-white font-bold text-sm">▾</span>
-                        <div class="text-sm font-medium text-gray-700">Development Information</div>
-                    </div>
-                </button>
-                <div class="px-4 pb-4 text-sm" id="commit-info-content" style="display: none;">
-                    <div id="commit-info"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="commit-info"></div>
 
     <!-- Scripts -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
