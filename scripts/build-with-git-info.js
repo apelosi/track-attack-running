@@ -7,11 +7,33 @@ const path = require('path');
 // Function to safely execute git commands
 function getGitInfo() {
     try {
-        // Check if we're in a Netlify build environment
+        // Always try to use git commands first for accurate information
+        const commitHash = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+        const shortHash = commitHash.substring(0, 8);
+        const commitMessage = execSync('git log -1 --pretty=format:%s', { encoding: 'utf8' }).trim();
+        const commitDate = execSync('git log -1 --pretty=format:%cI', { encoding: 'utf8' }).trim();
+        const buildTime = new Date().toISOString();
+        
+        // Check if we're in a Netlify build environment for additional context
+        const isNetlify = process.env.NETLIFY === 'true';
+        const deployUrl = process.env.URL || null;
+        
+        return {
+            hash: shortHash,
+            fullHash: commitHash,
+            message: commitMessage,
+            timestamp: commitDate,
+            buildTime: buildTime,
+            deployUrl: deployUrl,
+            environment: isNetlify ? 'production' : 'development'
+        };
+    } catch (error) {
+        console.warn('Warning: Could not get git information:', error.message);
+        
+        // Fallback to environment variables if git commands fail
         const isNetlify = process.env.NETLIFY === 'true';
         
         if (isNetlify) {
-            // Use Netlify environment variables for build info
             const commitHash = process.env.COMMIT_REF || 'unknown';
             const shortHash = commitHash.substring(0, 8);
             const commitMessage = process.env.COMMIT_MSG || 'Netlify deployment';
@@ -28,32 +50,15 @@ function getGitInfo() {
                 environment: 'production'
             };
         } else {
-            // Local development - use git commands
-            const commitHash = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
-            const shortHash = commitHash.substring(0, 8);
-            const commitMessage = execSync('git log -1 --pretty=format:%s', { encoding: 'utf8' }).trim();
-            const commitDate = execSync('git log -1 --pretty=format:%cI', { encoding: 'utf8' }).trim();
-            const buildTime = new Date().toISOString();
-            
             return {
-                hash: shortHash,
-                fullHash: commitHash,
-                message: commitMessage,
-                timestamp: commitDate,
-                buildTime: buildTime,
-                environment: 'development'
+                hash: 'unknown',
+                fullHash: 'unknown',
+                message: 'Build information unavailable',
+                timestamp: new Date().toISOString(),
+                buildTime: new Date().toISOString(),
+                environment: 'unknown'
             };
         }
-    } catch (error) {
-        console.warn('Warning: Could not get git information:', error.message);
-        return {
-            hash: 'unknown',
-            fullHash: 'unknown',
-            message: 'Build information unavailable',
-            timestamp: new Date().toISOString(),
-            buildTime: new Date().toISOString(),
-            environment: 'unknown'
-        };
     }
 }
 
