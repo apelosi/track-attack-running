@@ -321,58 +321,54 @@ async function loadCommitInfo() {
     if (!commitInfoDiv) return;
     
     try {
-        // Try to load commit info from the generated JSON file
-        const response = await fetch('/public/.well-known/commit-info.json').catch(() => null);
-        if (response && response.ok) {
-            const commitData = await response.json();
+        // Try multiple locations for commit info
+        const commitInfoUrls = [
+            '/.well-known/commit-info.json',
+            '/public/.well-known/commit-info.json',
+            '/commit-info.json'
+        ];
+        
+        let commitData = null;
+        
+        // Try each URL until we find one that works
+        for (const url of commitInfoUrls) {
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    commitData = await response.json();
+                    console.log('✅ Found commit info at:', url);
+                    break;
+                }
+            } catch (e) {
+                // Continue to next URL
+            }
+        }
+        
+        if (commitData) {
+            // Display the commit information
             commitInfoDiv.innerHTML = `
                 <div class="text-gray-600 space-y-2">
                     <div><strong>Build:</strong> ${new Date(commitData.buildTime).toLocaleString()}</div>
                     <div><strong>Commit:</strong> ${commitData.hash}</div>
                     <div><strong>Updated:</strong> ${new Date(commitData.timestamp).toLocaleDateString()}</div>
                     <div><strong>Message:</strong> ${commitData.message}</div>
+                    ${commitData.environment === 'production' ? `<div><strong>Environment:</strong> Production</div>` : ''}
                 </div>
             `;
         } else {
-            // Fallback: try to get git info directly if available
-            try {
-                const gitResponse = await fetch('/.well-known/commit-info.json').catch(() => null);
-                if (gitResponse && gitResponse.ok) {
-                    const gitData = await gitResponse.json();
-                    commitInfoDiv.innerHTML = `
-                        <div class="text-gray-600 space-y-2">
-                            <div><strong>Build:</strong> ${new Date(gitData.buildTime).toLocaleString()}</div>
-                            <div><strong>Commit:</strong> ${gitData.hash}</div>
-                            <div><strong>Updated:</strong> ${new Date(gitData.timestamp).toLocaleDateString()}</div>
-                            <div><strong>Message:</strong> ${gitData.message}</div>
-                        </div>
-                    `;
-                } else {
-                    // Show development info with current timestamp
-                    const now = new Date();
-                    commitInfoDiv.innerHTML = `
-                        <div class="text-gray-600 space-y-2">
-                            <div><strong>Build:</strong> ${now.toLocaleString()}</div>
-                            <div><strong>Environment:</strong> Development</div>
-                            <div><strong>Updated:</strong> ${now.toLocaleDateString()}</div>
-                            <div><strong>Status:</strong> Run 'npm run build' to get commit info</div>
-                        </div>
-                    `;
-                }
-            } catch (gitError) {
-                // Show development info
-                const now = new Date();
-                commitInfoDiv.innerHTML = `
-                    <div class="text-gray-600 space-y-2">
-                        <div><strong>Build:</strong> ${now.toLocaleString()}</div>
-                        <div><strong>Environment:</strong> Development</div>
-                        <div><strong>Updated:</strong> ${now.toLocaleDateString()}</div>
-                        <div><strong>Status:</strong> Run 'npm run build' to get commit info</div>
-                    </div>
-                `;
-            }
+            // Show development info with instructions
+            const now = new Date();
+            commitInfoDiv.innerHTML = `
+                <div class="text-gray-600 space-y-2">
+                    <div><strong>Build:</strong> ${now.toLocaleString()}</div>
+                    <div><strong>Environment:</strong> Development</div>
+                    <div><strong>Updated:</strong> ${now.toLocaleDateString()}</div>
+                    <div><strong>Status:</strong> Run 'npm run build' to get commit info</div>
+                </div>
+            `;
         }
     } catch (error) {
+        console.error('Error loading commit info:', error);
         // Show fallback info with current timestamp
         const now = new Date();
         commitInfoDiv.innerHTML = `
