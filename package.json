@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "echo 'No build step required for static site'",
-    "serve": "python3 -m http.server 8080",
-    "dev": "python3 -m http.server 8080"
+    "build": "node scripts/build-with-git-info.js",
+    "prebuild": "node scripts/build-with-git-info.js",
+    "serve": "npm run build && python3 -m http.server 8080",
+    "dev": "npm run build && python3 -m http.server 8080"
   },
   "dependencies": {
     "tailwindcss": "^3.4.7"
