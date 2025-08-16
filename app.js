@@ -334,30 +334,29 @@ async function loadCommitInfo() {
                 </div>
             `;
         } else {
-            // For development, simulate the original data structure that was working
-            // This mimics what the original Astro system would show
+            // For development, show current real-time information
             const now = new Date();
             const buildTime = now.toLocaleString();
-            const commitHash = '27a505d3'; // Simulate the commit hash from your screenshot
-            const lastUpdated = new Date(now.getTime() - 24 * 60 * 60 * 1000).toLocaleDateString(); // 1 day ago
-            const commitMessage = 'refactor: update package dependencies and enhance component layouts - Added esbuild as a devDependency and updated its version to 0.25.9 across multiple files. - Removed the dist/index.html file as it is no longer needed. - Improved layout and styling for the About, Book, Coaches, Gallery, and Hero components, enhancing visual consistency and user experience. - Updated the Privacy Policy effective date for accuracy. - Introduced alternating section bands in the base CSS for better visual separation.';
+            const lastUpdated = now.toLocaleDateString();
             
             commitInfoDiv.innerHTML = `
                 <div class="text-gray-600 space-y-2">
                     <div><strong>Build:</strong> ${buildTime}</div>
-                    <div><strong>Commit:</strong> ${commitHash}</div>
+                    <div><strong>Environment:</strong> Development</div>
                     <div><strong>Updated:</strong> ${lastUpdated}</div>
-                    <div><strong>Message:</strong> ${commitMessage}</div>
+                    <div><strong>Status:</strong> Local development mode - Live</div>
                 </div>
             `;
         }
     } catch (error) {
-        // Show fallback info
+        // Show fallback info with current timestamp
+        const now = new Date();
         commitInfoDiv.innerHTML = `
             <div class="text-gray-600 space-y-2">
                 <div><strong>Environment:</strong> Development</div>
-                <div><strong>Build Time:</strong> ${new Date().toLocaleString()}</div>
+                <div><strong>Build Time:</strong> ${now.toLocaleString()}</div>
                 <div><strong>Status:</strong> Local development mode</div>
+                <div><strong>Last Refresh:</strong> ${now.toLocaleTimeString()}</div>
             </div>
         `;
     }

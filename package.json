@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "echo 'No build step required for static site'",
-    "serve": "cd html && python3 -m http.server 8080",
-    "dev": "cd html && python3 -m http.server 8080"
+    "serve": "python3 -m http.server 8080",
+    "dev": "python3 -m http.server 8080"
   },
   "dependencies": {
     "tailwindcss": "^3.4.7"
