@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build": "echo 'No build step required for static site'",
     "serve": "cd html && python3 -m http.server 8080",
     "dev": "cd html && python3 -m http.server 8080"
   },
