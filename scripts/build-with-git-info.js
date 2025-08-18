@@ -71,9 +71,7 @@ function createCommitInfoFile() {
         // Main public directory (accessible from deployed site)
         path.join(__dirname, '..', 'public', '.well-known'),
         // Root directory (for local development)
-        path.join(__dirname, '..', '.well-known'),
-        // HTML subdirectory (if serving from there)
-        path.join(__dirname, '..', 'html', '.well-known')
+        path.join(__dirname, '..', '.well-known')
     ];
     
     locations.forEach(outputDir => {
@@ -101,8 +99,7 @@ function createCommitInfoFile() {
 function updateHTMLFiles() {
     const gitInfo = getGitInfo();
     const htmlFiles = [
-        path.join(__dirname, '..', 'index.html'),
-        path.join(__dirname, '..', 'html', 'index.html')
+        path.join(__dirname, '..', 'index.html')
     ];
     
     htmlFiles.forEach(htmlFile => {

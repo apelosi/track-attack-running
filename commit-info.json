@@ -1,9 +1,9 @@
 {
-  "hash": "fcc4590e",
-  "fullHash": "fcc4590e76d2d8679f99cf7d1567d6248790b71e",
-  "message": "Update commit-info.json files across multiple directories with new hash, timestamp, and deploy URL. Enhance git information retrieval logic in build script to improve reliability and fallback mechanisms.",
-  "timestamp": "2025-08-16T20:04:22+08:00",
-  "buildTime": "2025-08-16T12:04:31.604Z",
+  "hash": "a1fd4976",
+  "fullHash": "a1fd49760d0cdf471b01067d715bd35b5d92f6e4",
+  "message": "Update commit-info.json files across multiple directories with new hash and timestamp. Enhance privacy and terms HTML files for consistency and improved structure, including updated links and styles. Remove outdated Pinegrow backup files.",
+  "timestamp": "2025-08-18T12:38:43+08:00",
+  "buildTime": "2025-08-18T04:43:51.794Z",
   "deployUrl": null,
   "environment": "development"
 }
