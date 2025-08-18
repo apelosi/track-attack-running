@@ -110,6 +110,12 @@ p {
     z-index: 1; 
 }
 
+/* Ensure content appears above overlay */
+#about .relative.z-10 {
+    position: relative;
+    z-index: 10;
+}
+
 .band-bright::before { 
     content: ""; 
     position: absolute; 
@@ -207,6 +213,40 @@ p {
     }
 }
 
+/* Wordmark styling for dark backgrounds */
+.wordmark-invert {
+    filter: brightness(0) invert(1);
+}
+
+/* Responsive wordmark sizing */
+.wordmark-header {
+    height: 2rem; /* 32px */
+}
+
+.wordmark-footer {
+    height: 1.5rem; /* 24px */
+}
+
+@media (min-width: 640px) {
+    .wordmark-header {
+        height: 2.25rem; /* 36px */
+    }
+    
+    .wordmark-footer {
+        height: 1.75rem; /* 28px */
+    }
+}
+
+@media (min-width: 768px) {
+    .wordmark-header {
+        height: 2.5rem; /* 40px */
+    }
+    
+    .wordmark-footer {
+        height: 2rem; /* 32px */
+    }
+}
+
 /* Print styles */
 @media print {
     .band-bright::before,
@@ -214,4 +254,61 @@ p {
     .band-light::before {
         display: none;
     }
+}
+
+/* Make text white in bright/red sections for better readability */
+.band-bright h2,
+.band-bright h3,
+.band-bright h4,
+.band-bright h5,
+.band-bright h6,
+.band-bright p,
+.band-bright li,
+.band-bright span,
+.band-bright div {
+    color: white;
+}
+
+/* Ensure links in bright sections are also white */
+.band-bright a {
+    color: white;
+}
+
+.band-bright a:hover {
+    color: #f3f4f6; /* Light gray on hover */
+}
+
+/* Gallery button overrides for bright sections */
+.band-bright #prev-btn,
+.band-bright #next-btn {
+    background-color: white !important;
+    color: #0B0B0B !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.band-bright #prev-btn:focus,
+.band-bright #next-btn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.band-bright .gallery-plus-btn {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    color: #0B0B0B !important;
+}
+
+/* Gallery pagination dots styling */
+#dots button {
+    border: 1px solid #000000 !important;
+    transition: all 200ms ease-out;
+}
+
+#dots button:hover {
+    transform: scale(1.1);
+}
+
+/* Ensure dots are visible in bright sections */
+.band-bright #dots button {
+    border: 1px solid #000000 !important;
 }

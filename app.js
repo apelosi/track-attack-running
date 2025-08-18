@@ -51,7 +51,7 @@ class NetflixGallery {
             plus.target = '_blank';
             plus.rel = 'noopener';
             plus.setAttribute('aria-label', 'Open full size');
-            plus.className = 'absolute bottom-2 right-2 bg-white/95 text-kineticBlack rounded-full p-1 shadow hidden md:inline-flex';
+            plus.className = 'gallery-plus-btn absolute bottom-2 right-2 bg-white/95 text-kineticBlack rounded-full p-1 shadow hidden md:inline-flex';
             plus.innerHTML = '<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
 
             card.appendChild(img);
