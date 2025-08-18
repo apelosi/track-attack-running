@@ -218,30 +218,21 @@ p {
     filter: brightness(0) invert(1);
 }
 
-/* Responsive wordmark sizing */
-.wordmark-header {
-    height: 2rem; /* 32px */
-}
-
+/* Responsive wordmark sizing - consistent between header and footer */
+.wordmark-header,
 .wordmark-footer {
     height: 1.5rem; /* 24px */
 }
 
 @media (min-width: 640px) {
-    .wordmark-header {
-        height: 2.25rem; /* 36px */
-    }
-    
+    .wordmark-header,
     .wordmark-footer {
         height: 1.75rem; /* 28px */
     }
 }
 
 @media (min-width: 768px) {
-    .wordmark-header {
-        height: 2.5rem; /* 40px */
-    }
-    
+    .wordmark-header,
     .wordmark-footer {
         height: 2rem; /* 32px */
     }
@@ -311,4 +302,16 @@ p {
 /* Ensure dots are visible in bright sections */
 .band-bright #dots button {
     border: 1px solid #000000 !important;
+}
+
+/* Footer mobile adjustments - spacing only */
+@media (max-width: 479px) {
+    footer .flex {
+        white-space: nowrap;
+    }
+    
+    footer a {
+        text-decoration: none;
+        white-space: nowrap;
+    }
 }
