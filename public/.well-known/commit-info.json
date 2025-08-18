@@ -1,9 +1,9 @@
 {
-  "hash": "642d6462",
-  "fullHash": "642d6462f99aadfa1852c7c556353f5c407b2e42",
-  "message": "Enhance commit info loading and display logic in app.js",
-  "timestamp": "2025-08-16T19:56:54+08:00",
-  "buildTime": "2025-08-16T12:04:16.056Z",
+  "hash": "fcc4590e",
+  "fullHash": "fcc4590e76d2d8679f99cf7d1567d6248790b71e",
+  "message": "Update commit-info.json files across multiple directories with new hash, timestamp, and deploy URL. Enhance git information retrieval logic in build script to improve reliability and fallback mechanisms.",
+  "timestamp": "2025-08-16T20:04:22+08:00",
+  "buildTime": "2025-08-16T12:04:31.604Z",
   "deployUrl": null,
   "environment": "development"
 }
